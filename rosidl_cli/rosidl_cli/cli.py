@@ -16,11 +16,20 @@ import argparse
 import signal
 
 from rosidl_cli.command.generate import GenerateCommand
+from rosidl_cli.command.hash import HashCommand
 from rosidl_cli.command.translate import TranslateCommand
 from rosidl_cli.common import get_first_line_doc
 
 
+<<<<<<< HEAD
 def add_subparsers(parser, cli_name, commands):
+=======
+def add_subparsers(
+    parser: argparse.ArgumentParser,
+    cli_name: str,
+    commands: List[Union[GenerateCommand, HashCommand, TranslateCommand]]
+) -> argparse._SubParsersAction:
+>>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
     """
     Create argparse subparser for each command.
 
@@ -74,7 +83,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
+<<<<<<< HEAD
     commands = [GenerateCommand(), TranslateCommand()]
+=======
+    commands: List[Union[GenerateCommand, TranslateCommand, HashCommand]] = \
+        [GenerateCommand(), TranslateCommand(), HashCommand()]
+>>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
 
     # add arguments for command extension(s)
     add_subparsers(
