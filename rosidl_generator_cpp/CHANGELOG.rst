@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.0 (2025-07-01)
+------------------
 * rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_)
 * Add missing cstdint include (`#864 <https://github.com/ros2/rosidl/issues/864>`_)
 * Removed deprecated methods (`#863 <https://github.com/ros2/rosidl/issues/863>`_)

@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.0 (2025-07-01)
+------------------
 * fix cmake <3.10 deprecation (`#875 <https://github.com/ros2/rosidl/issues/875>`_)
 * Disable test failing in coverage jobs, see `#812 <https://github.com/ros2/rosidl/issues/812>`_ (`#853 <https://github.com/ros2/rosidl/issues/853>`_)
 * Contributors: Jorge J. Perez, mosfet80
