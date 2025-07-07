@@ -2,6 +2,12 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.5 (2025-07-07)
+------------------
+* Fix cmake <3.10 deprecation (`#875 <https://github.com/ros2/rosidl/issues/875>`_) (`#876 <https://github.com/ros2/rosidl/issues/876>`_)
+* Add an ament_cmake_gtest dependency to rosidl_runtime_c (`#865 <https://github.com/ros2/rosidl/issues/865>`_) (`#872 <https://github.com/ros2/rosidl/issues/872>`_)
+* Contributors: Chris Lalancette, mosfet80
+
 4.9.4 (2025-04-18)
 ------------------
 * Switch to ament_cmake_ros_core package (`#856 <https://github.com/ros2/rosidl/issues/856>`_)

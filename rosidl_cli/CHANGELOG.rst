@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.5 (2025-07-07)
+------------------
+* rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_) (`#866 <https://github.com/ros2/rosidl/issues/866>`_)
+* Contributors: Christophe Bedard, Francisco Rossi, Michel Hidalgo
+
 4.9.4 (2025-04-18)
 ------------------
 
