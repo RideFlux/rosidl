@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.6 (2024-11-25)
 ------------------
 

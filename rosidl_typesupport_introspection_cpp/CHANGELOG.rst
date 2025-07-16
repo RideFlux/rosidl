@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.6 (2024-11-25)
 ------------------
 
