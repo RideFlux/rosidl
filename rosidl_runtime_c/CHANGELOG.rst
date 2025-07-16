@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.7 (2025-07-16)
+------------------
 * Add an ament_cmake_gtest dependency to rosidl_runtime_c. (`#865 <https://github.com/ros2/rosidl/issues/865>`_) (`#874 <https://github.com/ros2/rosidl/issues/874>`_)
 * Contributors: mergify[bot]
 
