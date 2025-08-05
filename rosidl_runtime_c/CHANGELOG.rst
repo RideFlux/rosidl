@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.6.6 (2025-08-05)
+------------------
 * Add an ament_cmake_gtest dependency to rosidl_runtime_c. (`#865 <https://github.com/ros2/rosidl/issues/865>`_) (`#873 <https://github.com/ros2/rosidl/issues/873>`_)
   This was found while testing out a fix to colcon-core
   which will reduce the scope of test_depend.  Regardless,

@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.6.6 (2025-08-05)
+------------------
 * rosidl_cli: Add type description support (backport `#857 <https://github.com/ros2/rosidl/issues/857>`_) (`#867 <https://github.com/ros2/rosidl/issues/867>`_)
   * rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_)
   * Add type description support to rosidl_cli
