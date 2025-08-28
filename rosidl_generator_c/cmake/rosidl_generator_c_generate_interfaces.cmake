@@ -143,6 +143,24 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 
+if(ROSIDL_ENABLE_PCH AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+    # idl__functions.c.em
+    $<$<COMPILE_LANGUAGE:C>:"assert.h">
+    $<$<COMPILE_LANGUAGE:C>:"stdbool.h">
+    $<$<COMPILE_LANGUAGE:C>:"stdlib.h">
+    $<$<COMPILE_LANGUAGE:C>:"string.h">
+    # idl__functions.h.em
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_runtime_c/visibility_control.h">
+    # idl__struct.h.em
+    $<$<COMPILE_LANGUAGE:C>:"stddef.h">
+    $<$<COMPILE_LANGUAGE:C>:"stdint.h">
+    # idl_type_support.h.em
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_interface/macros.h">
+  )
+endif()
+
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_headers STREQUAL "")
     install(

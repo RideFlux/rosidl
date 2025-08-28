@@ -130,6 +130,25 @@ target_link_libraries(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
   ${rosidl_runtime_cpp_TARGETS})
 
+if(ROSIDL_ENABLE_PCH AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+    # idl__builder.hpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"utility">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_cpp/message_initialization.hpp">
+    # idl__struct.hpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"algorithm">
+    $<$<COMPILE_LANGUAGE:CXX>:"array">
+    $<$<COMPILE_LANGUAGE:CXX>:"memory">
+    $<$<COMPILE_LANGUAGE:CXX>:"string">
+    $<$<COMPILE_LANGUAGE:CXX>:"vector">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_cpp/bounded_vector.hpp">
+    # idl__traits.hpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"stdint.h">
+    $<$<COMPILE_LANGUAGE:CXX>:"type_traits">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_cpp/traits.hpp">
+  )
+endif()
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_headers STREQUAL "")
     install(

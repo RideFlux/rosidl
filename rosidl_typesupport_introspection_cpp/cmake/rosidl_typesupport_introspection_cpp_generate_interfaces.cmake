@@ -125,6 +125,34 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
+if(ROSIDL_ENABLE_PCH AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} PRIVATE
+    # msg__rosidl_typesupport_introspection_cpp.hpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_c/message_type_support_struct.h">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_interface/macros.h">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/visibility_control.h">
+    # msg__type_support.cpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"array">
+    $<$<COMPILE_LANGUAGE:CXX>:"cstddef">
+    $<$<COMPILE_LANGUAGE:CXX>:"string">
+    $<$<COMPILE_LANGUAGE:CXX>:"vector">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_c/message_type_support_struct.h">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_cpp/message_type_support.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_interface/macros.h">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/field_types.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/identifier.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/message_introspection.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/visibility_control.h">
+    # srv__rosidl_typesupport_introspection_cpp.hpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_c/service_type_support_struct.h">
+    # srv__type_support.cpp.em
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_cpp/service_type_support.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/service_introspection.hpp">
+    $<$<COMPILE_LANGUAGE:CXX>:"rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp">
+  )
+endif()
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_header_files STREQUAL "")
     install(

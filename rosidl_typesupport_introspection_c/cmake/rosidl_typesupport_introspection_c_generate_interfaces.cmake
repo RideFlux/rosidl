@@ -132,6 +132,23 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 
+if(ROSIDL_ENABLE_PCH AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} PRIVATE
+    # msg__rosidl_typesupport_introspection_c.h.em
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_runtime_c/message_type_support_struct.h">
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_interface/macros.h">
+    # msg__type_support.c.em
+    $<$<COMPILE_LANGUAGE:C>:"stddef.h">
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_introspection_c/field_types.h">
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_introspection_c/identifier.h">
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_introspection_c/message_introspection.h">
+    # srv__rosidl_typesupport_introspection_c.h.em
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_runtime_c/service_type_support_struct.h">
+    # srv__type_support.c.em
+    $<$<COMPILE_LANGUAGE:C>:"rosidl_typesupport_introspection_c/service_introspection.h">
+  )
+endif()
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_header_files STREQUAL "")
     install(
