@@ -23,6 +23,11 @@ import em
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
 
+# for multiprocessing parse_idl_file
+import pickle
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from multiprocessing import cpu_count
+
 
 def convert_camel_case_to_lower_case_underscore(value):
     # insert an underscore before any upper case letter
@@ -47,10 +52,63 @@ def get_newest_modification_time(target_dependencies):
             newest_timestamp = ts
     return newest_timestamp
 
+def _process_one_idl(args_pack):
+    """process one idl file, it will be multiprocessed."""
+    (idl_tuple, args, mapping, keep_case,
+     additional_context, latest_target_timestamp,
+     template_basepath, post_process_callback) = args_pack
+
+    idl_parts = idl_tuple.rsplit(':', 1)
+    assert len(idl_parts) == 2
+    locator = IdlLocator(*idl_parts)
+    idl_rel_path = pathlib.Path(idl_parts[1])
+    idl_stem = idl_rel_path.stem
+    if not keep_case:
+        idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
+
+    try:
+        idl_file = parse_idl_file(locator)
+        generated_files = []
+
+        for template_file, generated_filename in mapping.items():
+            generated_file = os.path.join(
+                args['output_dir'], str(idl_rel_path.parent),
+                generated_filename % idl_stem
+            )
+            #os.makedirs(os.path.dirname(generated_file), exist_ok=True)
+
+            generated_files.append(generated_file)
+
+            data = {
+                'package_name': args['package_name'],
+                'interface_path': idl_rel_path,
+                'content': idl_file.content,
+            }
+            if additional_context is not None:
+                data.update(additional_context)
+
+            expand_template(
+                os.path.basename(template_file),
+                data,
+                generated_file,
+                minimum_timestamp=latest_target_timestamp,
+                template_basepath=template_basepath,
+                post_process_callback=post_process_callback
+            )
+
+        return generated_files
+
+    except Exception as e:
+        print(
+            'Error processing idl file: ' + str(locator.get_absolute_path()),
+            file=sys.stderr
+        )
+        raise(e)
+
 
 def generate_files(
     generator_arguments_file, mapping, additional_context=None,
-    keep_case=False, post_process_callback=None
+    keep_case=False, post_process_callback=None, jobs=None
 ):
     args = read_generator_arguments(generator_arguments_file)
 
@@ -60,42 +118,62 @@ def generate_files(
             'Could not find template: ' + template_filename
 
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
-    generated_files = []
+    generated_files_all = []
 
-    for idl_tuple in args.get('idl_tuples', []):
-        idl_parts = idl_tuple.rsplit(':', 1)
-        assert len(idl_parts) == 2
-        locator = IdlLocator(*idl_parts)
-        idl_rel_path = pathlib.Path(idl_parts[1])
-        idl_stem = idl_rel_path.stem
-        if not keep_case:
-            idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
+    idl_tuples = list(args.get('idl_tuples', []))
+    if not idl_tuples:
+        return generated_files_all
+
+    use_pool = True
+    if post_process_callback is not None:
         try:
-            idl_file = parse_idl_file(locator)
-            for template_file, generated_filename in mapping.items():
-                generated_file = os.path.join(
-                    args['output_dir'], str(idl_rel_path.parent),
-                    generated_filename % idl_stem)
-                generated_files.append(generated_file)
-                data = {
-                    'package_name': args['package_name'],
-                    'interface_path': idl_rel_path,
-                    'content': idl_file.content,
-                }
-                if additional_context is not None:
-                    data.update(additional_context)
-                expand_template(
-                    os.path.basename(template_file), data,
-                    generated_file, minimum_timestamp=latest_target_timestamp,
-                    template_basepath=template_basepath,
-                    post_process_callback=post_process_callback)
-        except Exception as e:
-            print(
-                'Error processing idl file: ' +
-                str(locator.get_absolute_path()), file=sys.stderr)
-            raise(e)
+            pickle.dumps(post_process_callback)
+        except Exception:
+            use_pool = False
 
-    return generated_files
+    if jobs is None or jobs <= 0:
+        jobs = min(cpu_count(), max(1, len(idl_tuples)))
+
+    task_args = [
+        (idl_tuple, args, mapping, keep_case, additional_context,
+         latest_target_timestamp, template_basepath, post_process_callback)
+        for idl_tuple in idl_tuples
+    ]
+
+    def _run_in_executor(executor_cls, max_workers, tasks):
+        results = []
+        with executor_cls(max_workers=max_workers) as ex:
+            futures = [ex.submit(_process_one_idl, a) for a in tasks]
+            for fut in as_completed(futures):
+                res = fut.result()
+                if res:
+                    results.extend(res)
+        return results
+
+    if use_pool and jobs > 1:
+        # Parallel
+        try:
+            generated_files_all.extend(
+                _run_in_executor(ProcessPoolExecutor, jobs, task_args)
+            )
+        except Exception as e:
+            # fallback to ThreadPool
+            print(
+                f"[rosidl_generator] ProcessPoolExecutor failed ({type(e).__name__}: {e}). "
+                "Falling back to ThreadPoolExecutor.",
+                file=sys.stderr
+            )
+            generated_files_all.extend(
+                _run_in_executor(ThreadPoolExecutor, jobs, task_args)
+            )
+    else:
+        # Sequential
+        for a in task_args:
+            result = _process_one_idl(a)
+            if result:
+                generated_files_all.extend(result)
+
+    return generated_files_all
 
 
 template_prefix_path = []
