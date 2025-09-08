@@ -51,7 +51,7 @@ from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import UnboundedString
 from rosidl_parser.definition import UnboundedWString
 
-grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
+grammar_file = os.path.join(os.path.dirname(__file__), 'grammar_lalr.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
     grammar = h.read()
 
@@ -85,7 +85,7 @@ def parse_idl_string(idl_string, png_file=None):
 def get_ast_from_idl_string(idl_string):
     global _parser
     if _parser is None:
-        _parser = Lark(grammar, start='specification')
+        _parser = Lark(grammar, start='specification', parser='lalr', lexer="contextual")
     return _parser.parse(idl_string)
 
 
