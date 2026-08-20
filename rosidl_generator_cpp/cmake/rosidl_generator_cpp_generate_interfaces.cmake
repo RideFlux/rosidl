@@ -146,7 +146,7 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 
 if(ROSIDL_ENABLE_PCH AND COMMAND target_precompile_headers)
-  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} PRIVATE
     # idl__builder.hpp.em
     $<$<COMPILE_LANGUAGE:CXX>:"utility">
     $<$<COMPILE_LANGUAGE:CXX>:"rosidl_runtime_cpp/message_initialization.hpp">

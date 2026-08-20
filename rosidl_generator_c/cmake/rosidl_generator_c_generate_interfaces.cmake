@@ -146,7 +146,7 @@ add_dependencies(
 )
 
 if(ROSIDL_ENABLE_PCH AND COMMAND target_precompile_headers)
-  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+  target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} PRIVATE
     # idl__functions.c.em
     $<$<COMPILE_LANGUAGE:C>:"assert.h">
     $<$<COMPILE_LANGUAGE:C>:"stdbool.h">
