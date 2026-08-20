@@ -137,7 +137,7 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 
-if(ROSIDL_ENABLE_PCH AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+if(ROSIDL_ENABLE_PCH AND COMMAND target_precompile_headers)
   target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix} PRIVATE
     # msg__rosidl_typesupport_introspection_c.h.em
     $<$<COMPILE_LANGUAGE:C>:"rosidl_runtime_c/message_type_support_struct.h">
